@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Copy HEX Color</h1>
+<!-- 1. Tombol pilih warna -->
+<input type="color" id="picker" value="#5c6ac4" oninput="gantiWarna()">
+
+<!-- 2. Teks kode HEX -->
+<h2 id="kodeHex">#5C6AC4</h2>
+
+<!-- 3. Tombol copy -->
+<button onclick="salinKode()">Copy HEX</button>
+
+<!-- Tambahkan ini di bawah elemen button kamu -->
+<div class="history-box">
+  <h3>History Color</h3>
+  <ul id="historyList"></ul>
+</div>
+
+<script>
+  // Fungsi yang otomatis jalan saat halaman pertama kali dibuka
+  window.onload = function() {
+    loadHistory();
+  };
+
+  function gantiWarna() {
+    let warna = document.getElementById("picker").value;
+    let teksHex = document.getElementById("kodeHex");
+    teksHex.innerText = warna;
+    teksHex.style.color = warna;
+  }
+
+  function salinKode() {
+    let warna = document.getElementById("kodeHex").innerText;
+    navigator.clipboard.writeText(warna);
+
+    // 1. Simpan ke localStorage
+    simpanKeStorage(warna);
+
+    // 2. Tampilkan di layar
+    tambahKeList(warna);
+
+    alert("Copied: " + warna);
+  }
+
+  function tambahKeList(warna) {
+    let list = document.getElementById("historyList");
+    let item = document.createElement("li");
+    item.innerText = warna;
+    item.style.color = warna;
+    list.appendChild(item);
+  }
+
+  function simpanKeStorage(warna) {
+    // Ambil data lama dari localStorage (kalau ada)
+    let history = JSON.parse(localStorage.getItem("colorHistory")) || [];
+    
+    // Tambah warna baru ke dalam array
+    history.push(warna);
+    
+    // Simpan kembali array ke localStorage
+    localStorage.setItem("colorHistory", JSON.stringify(history));
+  }
+
+  function loadHistory() {
+    // Ambil data dari localStorage
+    let history = JSON.parse(localStorage.getItem("colorHistory")) || [];
+    
+    // Tampilkan semua warna tersimpan ke daftar
+    history.forEach(function(warna) {
+      tambahKeList(warna);
+    });
+  }
+</script>
+</body>
+</html>
